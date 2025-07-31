@@ -1,0 +1,12 @@
+# Node / Vue
+node_modules/
+dist/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# 通用
+.env
+.DS_Store

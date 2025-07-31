@@ -1,0 +1,3693 @@
+# Interview AI 智能面试平台 - 完整API详细文档 (87个接口)
+
+## 基础信息
+- 基础URL: http://localhost:5000
+- 认证方式: JWT Bearer Token
+- 数据格式: JSON
+- 字符编码: UTF-8
+
+===============================================================================
+## 1. 认证模块 (auth.js) - 21个接口
+===============================================================================
+
+### 用户认证
+
+#### 1.1 用户登录
+接口地址: POST /api/auth/login
+请求头:
+{
+  "Content-Type": "application/json"
+}
+请求参数:
+{
+  "username": "string",
+  "password": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "登录成功",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+#### 1.2 用户注册
+接口地址: POST /api/auth/register
+请求头:
+{
+  "Content-Type": "application/json"
+}
+请求参数:
+{
+  "username": "string",
+  "email": "string",
+  "password": "string",
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "注册成功",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+#### 1.3 用户登出
+接口地址: POST /api/auth/logout
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "登出成功"
+}
+
+#### 1.4 刷新Token
+接口地址: POST /api/auth/refresh-token
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "refresh_token": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "Token刷新成功",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+#### 1.5 验证Token
+接口地址: POST /api/auth/verify-token
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "Token有效",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+### 账户安全设置
+
+#### 1.6 修改密码
+接口地址: POST /api/auth/change-password
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "old_password": "string",
+  "new_password": "string",
+  "confirm_password": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "密码修改成功"
+}
+
+#### 1.7 更换手机号
+接口地址: POST /api/auth/change-phone
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "new_phone": "string",
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "手机号更换成功",
+  "phone": "138****8888"
+}
+
+#### 1.8 获取登录历史
+接口地址: GET /api/auth/login-history
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "login_time": "2025-01-23T10:30:00Z",
+      "ip_address": "192.168.1.100",
+      "device": "Chrome 120.0.0.0",
+      "location": "北京市"
+    }
+  ]
+}
+
+#### 1.9 刷新登录历史
+接口地址: POST /api/auth/refresh-login-history
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "登录历史已刷新",
+  "data": [
+    {
+      "id": 1,
+      "login_time": "2025-01-23T10:30:00Z",
+      "ip_address": "192.168.1.100",
+      "device": "Chrome 120.0.0.0",
+      "location": "北京市"
+    }
+  ]
+}
+
+### 隐私设置
+
+#### 1.10 获取隐私设置
+接口地址: GET /api/preferences/privacy
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "profile_visibility": "public",
+    "resume_visibility": "private",
+    "interview_history_visibility": "friends",
+    "allow_search": true,
+    "show_online_status": false
+  }
+}
+
+#### 1.11 更新隐私设置
+接口地址: PUT /api/preferences/privacy
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "profile_visibility": "public",
+  "resume_visibility": "private",
+  "interview_history_visibility": "friends",
+  "allow_search": true,
+  "show_online_status": false
+}
+响应示例:
+{
+  "success": true,
+  "message": "隐私设置更新成功",
+  "data": {
+    "profile_visibility": "public",
+    "resume_visibility": "private",
+    "interview_history_visibility": "friends",
+    "allow_search": true,
+    "show_online_status": false
+  }
+}
+
+#### 1.12 设置简历可见范围
+接口地址: POST /api/auth/set-resume-visibility
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "visibility": "public"
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历可见范围设置成功",
+  "visibility": "public"
+}
+
+#### 1.13 清除用户痕迹数据
+接口地址: POST /api/preferences/clear-data
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "data_types": ["login_history", "search_history", "view_history"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "用户数据清除成功",
+  "cleared_items": 156
+}
+
+### 账户注销
+
+#### 1.14 注销账户
+接口地址: POST /api/preferences/account/delete
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "password": "string",
+  "confirmation": "DELETE_MY_ACCOUNT"
+}
+响应示例:
+{
+  "success": true,
+  "message": "账户注销成功"
+}
+
+### 账户信息
+
+#### 1.15 获取当前用户信息
+接口地址: GET /api/auth/me
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "phone": "138****8888",
+    "role": "用户",
+    "avatar": "https://example.com/avatar.jpg",
+    "created_at": "2025-01-01T00:00:00Z",
+    "last_login": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 1.16 更新用户基本信息
+接口地址: PUT /api/auth/me
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "username": "string",
+  "email": "string",
+  "phone": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "用户信息更新成功",
+  "data": {
+    "user_id": 1,
+    "username": "newusername",
+    "email": "newemail@example.com",
+    "phone": "139****9999"
+  }
+}
+
+#### 1.17 获取用户权限
+接口地址: GET /api/auth/permissions
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "permissions": [
+      "interview:create",
+      "resume:upload",
+      "profile:edit",
+      "preferences:manage"
+    ],
+    "role": "用户",
+    "subscription": "premium"
+  }
+}
+
+#### 1.18 检查用户状态
+接口地址: GET /api/auth/status
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "is_active": true,
+    "is_verified": true,
+    "subscription_status": "active",
+    "account_status": "normal",
+    "last_activity": "2025-01-23T10:30:00Z"
+  }
+}
+
+### 双因素认证
+
+#### 1.19 启用双因素认证
+接口地址: POST /api/auth/2fa/enable
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "password": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "双因素认证已启用",
+  "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+  "secret": "JBSWY3DPEHPK3PXP",
+  "backup_codes": [
+    "12345678",
+    "87654321"
+  ]
+}
+
+#### 1.20 禁用双因素认证
+接口地址: POST /api/auth/2fa/disable
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "password": "string",
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "双因素认证已禁用"
+}
+
+#### 1.21 验证双因素认证代码
+接口地址: POST /api/auth/2fa/verify
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "验证成功",
+  "verified": true
+}
+
+===============================================================================
+## 2. 用户资料模块 (profile.js) - 10个接口
+===============================================================================
+
+### 个人信息管理
+
+#### 2.1 获取个人信息
+接口地址: GET /api/profile/personal-info
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "name": "张三",
+    "gender": "male",
+    "birth_date": "1995-06-15",
+    "phone": "138****8888",
+    "email": "zhangsan@example.com",
+    "location": "北京市朝阳区",
+    "bio": "资深软件工程师，专注于前端开发"
+  }
+}
+
+#### 2.2 更新个人信息
+接口地址: PUT /api/profile/personal-info
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "name": "张三",
+  "gender": "male",
+  "birth_date": "1995-06-15",
+  "phone": "138****8888",
+  "location": "北京市朝阳区",
+  "bio": "资深软件工程师，专注于前端开发"
+}
+响应示例:
+{
+  "success": true,
+  "message": "个人信息更新成功",
+  "data": {
+    "name": "张三",
+    "gender": "male",
+    "birth_date": "1995-06-15",
+    "phone": "138****8888",
+    "location": "北京市朝阳区",
+    "bio": "资深软件工程师，专注于前端开发"
+  }
+}
+
+#### 2.3 上传头像
+接口地址: POST /api/profile/avatar
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+avatar: File (图片文件)
+响应示例:
+{
+  "success": true,
+  "message": "头像上传成功",
+  "data": {
+    "avatar_url": "https://example.com/avatars/user_1_avatar.jpg"
+  }
+}
+
+#### 2.4 获取用户资料概要
+接口地址: GET /api/profile/summary
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "profile_completion": 85,
+    "resume_count": 3,
+    "interview_count": 12,
+    "skills_count": 15,
+    "last_updated": "2025-01-23T10:30:00Z"
+  }
+}
+
+### 教育背景
+
+#### 2.5 获取教育背景
+接口地址: GET /api/profile/education
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+
+#### 2.6 更新教育背景
+接口地址: PUT /api/profile/education
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "education": [
+    {
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+响应示例:
+{
+  "success": true,
+  "message": "教育背景更新成功",
+  "data": [
+    {
+      "id": 1,
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+
+### 技能管理
+
+#### 2.7 获取技能列表
+接口地址: GET /api/profile/skills
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "level": "expert",
+        "years": 5
+      },
+      {
+        "name": "Python",
+        "level": "advanced",
+        "years": 3
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "level": "expert"
+      },
+      {
+        "name": "项目管理",
+        "level": "intermediate"
+      }
+    ]
+  }
+}
+
+#### 2.8 更新技能列表
+接口地址: PUT /api/profile/skills
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "technical_skills": [
+    {
+      "name": "JavaScript",
+      "level": "expert",
+      "years": 5
+    }
+  ],
+  "soft_skills": [
+    {
+      "name": "团队协作",
+      "level": "expert"
+    }
+  ]
+}
+响应示例:
+{
+  "success": true,
+  "message": "技能列表更新成功",
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "level": "expert",
+        "years": 5
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "level": "expert"
+      }
+    ]
+  }
+}
+
+### 求职偏好
+
+#### 2.9 获取求职偏好
+接口地址: GET /profile/job-preferences
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "desired_positions": ["前端工程师", "全栈工程师"],
+    "preferred_locations": ["北京", "上海", "深圳"],
+    "salary_range": {
+      "min": 15000,
+      "max": 25000
+    },
+    "work_type": "full_time",
+    "remote_work": true,
+    "industry_preferences": ["互联网", "金融科技"]
+  }
+}
+
+#### 2.10 更新求职偏好
+接口地址: PUT /profile/job-preferences
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "desired_positions": ["前端工程师", "全栈工程师"],
+  "preferred_locations": ["北京", "上海", "深圳"],
+  "salary_range": {
+    "min": 15000,
+    "max": 25000
+  },
+  "work_type": "full_time",
+  "remote_work": true,
+  "industry_preferences": ["互联网", "金融科技"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "求职偏好更新成功",
+  "data": {
+    "desired_positions": ["前端工程师", "全栈工程师"],
+    "preferred_locations": ["北京", "上海", "深圳"],
+    "salary_range": {
+      "min": 15000,
+      "max": 25000
+    },
+    "work_type": "full_time",
+    "remote_work": true,
+    "industry_preferences": ["互联网", "金融科技"]
+  }
+}
+
+===============================================================================
+## 3. 简历管理模块 (resume.js) - 22个接口
+===============================================================================
+
+### 简历基本操作
+
+#### 3.1 上传简历
+接口地址: POST /api/resume/upload
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+resume: File (PDF/DOC/DOCX文件)
+title: string (可选，简历标题)
+响应示例:
+{
+  "success": true,
+  "message": "简历上传成功",
+  "data": {
+    "resume_id": 123,
+    "title": "张三_前端工程师简历",
+    "file_name": "resume.pdf",
+    "file_size": 1024000,
+    "upload_time": "2025-01-23T10:30:00Z",
+    "status": "processing"
+  }
+}
+
+#### 3.2 处理简历
+接口地址: POST /api/resume/process/{resumeId}
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "process_type": "full_analysis"
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历处理已开始",
+  "data": {
+    "resume_id": 123,
+    "process_id": "proc_456",
+    "status": "processing",
+    "estimated_time": 30
+  }
+}
+
+#### 3.3 获取简历列表
+接口地址: GET /api/resume/list
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resumes": [
+      {
+        "resume_id": 123,
+        "title": "张三_前端工程师简历",
+        "file_name": "resume.pdf",
+        "upload_time": "2025-01-23T10:30:00Z",
+        "status": "completed",
+        "analysis_score": 85
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "per_page": 10
+  }
+}
+
+#### 3.4 获取简历详情
+接口地址: GET /api/resume/{resumeId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resume_id": 123,
+    "title": "张三_前端工程师简历",
+    "personal_info": {
+      "name": "张三",
+      "email": "zhangsan@example.com",
+      "phone": "138****8888"
+    },
+    "education": [
+      {
+        "school": "清华大学",
+        "degree": "本科",
+        "major": "计算机科学与技术"
+      }
+    ],
+    "work_experience": [
+      {
+        "company": "腾讯",
+        "position": "前端工程师",
+        "duration": "2020-2023"
+      }
+    ],
+    "skills": ["JavaScript", "React", "Vue.js"],
+    "analysis_result": {
+      "score": 85,
+      "strengths": ["技术栈完整", "项目经验丰富"],
+      "improvements": ["可以增加更多量化成果"]
+    }
+  }
+}
+
+#### 3.5 更新简历
+接口地址: PUT /api/resume/{resumeId}
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "title": "张三_高级前端工程师简历",
+  "personal_info": {
+    "name": "张三",
+    "email": "zhangsan@example.com",
+    "phone": "138****8888"
+  },
+  "skills": ["JavaScript", "React", "Vue.js", "Node.js"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历更新成功",
+  "data": {
+    "resume_id": 123,
+    "title": "张三_高级前端工程师简历",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 3.6 删除简历
+接口地址: DELETE /api/resume/{resumeId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历删除成功"
+}
+
+#### 3.7 分析简历
+接口地址: POST /api/resume/{resumeId}/analyze
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "analysis_type": "comprehensive",
+  "target_position": "前端工程师"
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历分析完成",
+  "data": {
+    "analysis_id": "ana_789",
+    "score": 85,
+    "strengths": [
+      "技术栈与岗位匹配度高",
+      "项目经验丰富",
+      "教育背景优秀"
+    ],
+    "weaknesses": [
+      "缺少量化的工作成果",
+      "软技能描述不够具体"
+    ],
+    "suggestions": [
+      "增加具体的项目数据和成果",
+      "补充团队协作和领导经验"
+    ],
+    "keyword_match": 78,
+    "format_score": 92
+  }
+}
+
+#### 3.8 获取简历技能
+接口地址: GET /api/resume/{resumeId}/skills
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "confidence": 0.95,
+        "category": "编程语言"
+      },
+      {
+        "name": "React",
+        "confidence": 0.88,
+        "category": "前端框架"
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "confidence": 0.75
+      }
+    ],
+    "total_skills": 15
+  }
+}
+
+#### 3.9 获取简历状态
+接口地址: GET /api/resume/status/{resumeId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resume_id": 123,
+    "status": "completed",
+    "progress": 100,
+    "current_step": "analysis_complete",
+    "estimated_remaining_time": 0,
+    "error_message": null
+  }
+}
+
+### 简历AI分析服务
+
+#### 3.10 OCR文档识别
+接口地址: POST /api/resume/ocr/recognize
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+file: File (图片或PDF文件)
+language: string (可选，默认为中文)
+响应示例:
+{
+  "success": true,
+  "data": {
+    "text": "张三\n前端工程师\n电话：138****8888\n邮箱：zhangsan@example.com\n...",
+    "confidence": 0.92,
+    "pages": 1,
+    "processing_time": 2.5
+  }
+}
+
+#### 3.11 文本提取
+接口地址: POST /api/resume/text/extract
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+file: File (DOC/DOCX/PDF文件)
+响应示例:
+{
+  "success": true,
+  "data": {
+    "text": "张三\n前端工程师\n...",
+    "word_count": 1250,
+    "pages": 2,
+    "format": "pdf"
+  }
+}
+
+#### 3.12 简历内容分析
+接口地址: POST /api/resume/content/analyze
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "text": "简历文本内容...",
+  "target_position": "前端工程师"
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "personal_info": {
+      "name": "张三",
+      "email": "zhangsan@example.com",
+      "phone": "138****8888"
+    },
+    "sections": {
+      "education": "检测到教育背景部分",
+      "experience": "检测到工作经验部分",
+      "skills": "检测到技能部分"
+    },
+    "structure_score": 85,
+    "completeness": 78
+  }
+}
+
+#### 3.13 简历技能提取
+接口地址: POST /api/resume/skills/extract
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "text": "简历文本内容...",
+  "skill_categories": ["技术技能", "软技能", "语言技能"]
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "confidence": 0.95,
+        "mentions": 3
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "confidence": 0.80,
+        "mentions": 2
+      }
+    ],
+    "languages": [
+      {
+        "name": "英语",
+        "level": "熟练",
+        "confidence": 0.85
+      }
+    ]
+  }
+}
+
+#### 3.14 简历匹配分析
+接口地址: POST /api/resume/match/position
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "resume_text": "简历文本内容...",
+  "job_description": "岗位描述...",
+  "position_title": "前端工程师"
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "match_score": 82,
+    "skill_match": 85,
+    "experience_match": 78,
+    "education_match": 90,
+    "matched_keywords": [
+      "JavaScript", "React", "Vue.js"
+    ],
+    "missing_keywords": [
+      "TypeScript", "Node.js"
+    ],
+    "recommendations": [
+      "补充TypeScript相关经验",
+      "增加后端开发技能"
+    ]
+  }
+}
+
+#### 3.15 简历优化建议
+接口地址: POST /api/resume/optimization/suggest
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "resume_text": "简历文本内容...",
+  "target_position": "前端工程师",
+  "optimization_focus": ["content", "format", "keywords"]
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "overall_score": 75,
+    "content_suggestions": [
+      "增加量化的工作成果",
+      "补充项目技术细节"
+    ],
+    "format_suggestions": [
+      "调整段落间距",
+      "统一字体格式"
+    ],
+    "keyword_suggestions": [
+      "添加行业关键词",
+      "优化技能描述"
+    ],
+    "priority_improvements": [
+      {
+        "type": "content",
+        "description": "增加具体的项目数据",
+        "impact": "high"
+      }
+    ]
+  }
+}
+
+### 简历便捷操作
+
+#### 3.16 解析简历内容
+接口地址: POST /api/resume/parse
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+file: File (简历文件)
+parse_mode: string (可选，quick/detailed)
+响应示例:
+{
+  "success": true,
+  "data": {
+    "parse_id": "parse_123",
+    "personal_info": {
+      "name": "张三",
+      "email": "zhangsan@example.com"
+    },
+    "sections": ["personal_info", "education", "experience", "skills"],
+    "confidence": 0.88,
+    "processing_time": 3.2
+  }
+}
+
+#### 3.17 重新解析简历
+接口地址: POST /api/resume/{resumeId}/reparse
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "parse_mode": "detailed",
+  "force_reparse": true
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历重新解析已开始",
+  "data": {
+    "resume_id": 123,
+    "parse_id": "reparse_456",
+    "status": "processing"
+  }
+}
+
+#### 3.18 获取文件预览URL
+接口地址: GET /api/resume/{resumeId}/preview
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "preview_url": "https://example.com/preview/resume_123.pdf",
+    "thumbnail_url": "https://example.com/thumbnails/resume_123.jpg",
+    "expires_at": "2025-01-23T12:30:00Z"
+  }
+}
+
+### 简历评估和报告
+
+#### 3.19 获取简历评估报告
+接口地址: GET /api/resume/{resumeId}/evaluation
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "evaluation_id": "eval_789",
+    "overall_score": 85,
+    "category_scores": {
+      "content_quality": 88,
+      "format_structure": 82,
+      "keyword_optimization": 79,
+      "completeness": 90
+    },
+    "detailed_feedback": {
+      "strengths": [
+        "教育背景优秀",
+        "技术技能全面"
+      ],
+      "improvements": [
+        "增加量化成果",
+        "优化格式排版"
+      ]
+    },
+    "benchmark_comparison": {
+      "industry_average": 72,
+      "position_average": 76,
+      "percentile": 78
+    }
+  }
+}
+
+#### 3.20 导出简历分析报告
+接口地址: GET /api/resume/{resumeId}/export
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "export_url": "https://example.com/exports/resume_analysis_123.pdf",
+    "format": "pdf",
+    "file_size": 2048000,
+    "expires_at": "2025-01-24T10:30:00Z"
+  }
+}
+
+#### 3.21 获取简历统计数据
+接口地址: GET /api/resume/stats
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "total_resumes": 5,
+    "analyzed_resumes": 4,
+    "average_score": 78.5,
+    "top_skills": [
+      "JavaScript",
+      "Python",
+      "React"
+    ],
+    "upload_trend": [
+      {
+        "month": "2025-01",
+        "count": 2
+      }
+    ]
+  }
+}
+
+===============================================================================
+## 4. 面试模块 (interview.js) - 25个接口
+===============================================================================
+
+### 面试核心功能
+
+#### 4.1 开始面试
+接口地址: POST /api/interview/start
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "resume_id": 123,
+  "interview_config": {
+    "interview_mode": "technical",
+    "difficulty_level": "intermediate",
+    "position": "frontend_engineer",
+    "company": "腾讯",
+    "interaction_mode": "frequent"
+  },
+  "preferences": {
+    "avatar_id": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN"
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试开始成功",
+  "data": {
+    "interview_id": 456,
+    "session_id": "session_456_1",
+    "first_question_video_url": "xrtcs://xrtc-cn-east-2.xf-yun.com/ase0001...",
+    "stream_type": "xrtc",
+    "first_question_data": {
+      "type": "开场",
+      "content": "你好！根据你的简历，你有丰富的前端开发经验...",
+      "reference_answer": "我在前端开发方面有3年经验..."
+    }
+  }
+}
+
+#### 4.2 获取下一题
+接口地址: POST /api/interview/next-question
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "current_question_id": 1,
+  "user_answer": "我在前端开发方面有3年经验，主要使用React和Vue.js..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "question_id": 2,
+    "question_type": "技术",
+    "question_content": "请描述一下React的生命周期方法",
+    "video_url": "xrtcs://xrtc-cn-east-2.xf-yun.com/ase0002...",
+    "stream_type": "xrtc",
+    "reference_answer": "React的生命周期方法包括...",
+    "time_limit": 300,
+    "difficulty": "intermediate"
+  }
+}
+
+#### 4.3 提交答案
+接口地址: POST /api/interview/submit-answer
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "question_id": 2,
+  "answer": "React的生命周期方法主要分为三个阶段...",
+  "answer_time": 180,
+  "confidence_level": 8
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "answer_id": 789,
+    "ai_feedback": {
+      "score": 85,
+      "strengths": ["回答完整", "技术点准确"],
+      "improvements": ["可以增加实际应用场景"],
+      "detailed_analysis": "你对React生命周期的理解很好..."
+    },
+    "next_question_preview": {
+      "type": "技术",
+      "topic": "状态管理"
+    }
+  }
+}
+
+#### 4.4 结束面试
+接口地址: POST /api/interview/end
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "end_reason": "completed"
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试结束",
+  "data": {
+    "interview_id": 456,
+    "total_questions": 8,
+    "total_time": 1800,
+    "overall_score": 82,
+    "report_url": "/api/interview/456/report",
+    "summary": {
+      "strengths": ["技术基础扎实", "表达清晰"],
+      "improvements": ["可以增加项目经验描述"]
+    }
+  }
+}
+
+#### 4.5 获取面试列表
+接口地址: GET /api/interview/list
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interviews": [
+      {
+        "interview_id": 456,
+        "position": "前端工程师",
+        "company": "腾讯",
+        "date": "2025-01-23T10:30:00Z",
+        "status": "completed",
+        "score": 82,
+        "duration": 1800
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "per_page": 10
+  }
+}
+
+### 面试设置接口
+
+#### 4.6 更新面试模式
+接口地址: POST /interview/mode/update
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "interview_mode": "behavioral"
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试模式更新成功",
+  "data": {
+    "interview_mode": "behavioral",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 4.7 更新面试难度
+接口地址: POST /interview/difficulty/update
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "difficulty_level": "advanced"
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试难度更新成功",
+  "data": {
+    "difficulty_level": "advanced",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 4.8 更新面试官表情
+接口地址: POST /interview/expression/update
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "expression": "encouraging"
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试官表情更新成功",
+  "data": {
+    "expression": "encouraging",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 4.9 更新岗位选择
+接口地址: POST /interview/position/update
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "position": "fullstack_engineer",
+  "company": "字节跳动"
+}
+响应示例:
+{
+  "success": true,
+  "message": "岗位信息更新成功",
+  "data": {
+    "position": "fullstack_engineer",
+    "company": "字节跳动",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+### 面试录制和控制接口
+
+#### 4.10 开始面试录制
+接口地址: POST /interview/recording/start
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "recording_config": {
+    "video_quality": "720p",
+    "audio_quality": "high",
+    "include_screen": false
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "录制开始成功",
+  "data": {
+    "recording_id": "rec_789",
+    "status": "recording",
+    "start_time": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 4.11 暂停/恢复面试录制
+接口地址: POST /interview/recording/toggle
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "recording_id": "rec_789",
+  "action": "pause"
+}
+响应示例:
+{
+  "success": true,
+  "message": "录制已暂停",
+  "data": {
+    "recording_id": "rec_789",
+    "status": "paused",
+    "action_time": "2025-01-23T10:35:00Z"
+  }
+}
+
+#### 4.12 停止面试录制
+接口地址: POST /interview/recording/stop
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "recording_id": "rec_789"
+}
+响应示例:
+{
+  "success": true,
+  "message": "录制停止成功",
+  "data": {
+    "recording_id": "rec_789",
+    "status": "completed",
+    "duration": 1800,
+    "file_url": "https://example.com/recordings/rec_789.mp4",
+    "file_size": 52428800
+  }
+}
+
+#### 4.13 获取录制状态
+接口地址: GET /interview/recording/status/{sessionId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "recording_id": "rec_789",
+    "status": "recording",
+    "duration": 900,
+    "file_size": 26214400,
+    "quality": "720p"
+  }
+}
+
+### 面试状态管理接口
+
+#### 4.14 获取面试会话信息
+接口地址: GET /interview/session/{sessionId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "session_id": "session_456_1",
+    "interview_id": 456,
+    "status": "active",
+    "current_question": 3,
+    "total_questions": 8,
+    "start_time": "2025-01-23T10:30:00Z",
+    "elapsed_time": 900,
+    "config": {
+      "interview_mode": "technical",
+      "difficulty_level": "intermediate",
+      "position": "frontend_engineer"
+    }
+  }
+}
+
+#### 4.15 更新面试会话状态
+接口地址: POST /interview/session/status
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "status": "paused",
+  "reason": "user_request"
+}
+响应示例:
+{
+  "success": true,
+  "message": "会话状态更新成功",
+  "data": {
+    "session_id": "session_456_1",
+    "status": "paused",
+    "updated_at": "2025-01-23T10:35:00Z"
+  }
+}
+
+#### 4.16 收藏面试问题
+接口地址: POST /interview/question/favorite
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "question_id": 123,
+  "session_id": "session_456_1"
+}
+响应示例:
+{
+  "success": true,
+  "message": "问题收藏成功",
+  "data": {
+    "favorite_id": 789,
+    "question_id": 123,
+    "created_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 4.17 获取用户收藏的问题列表
+接口地址: GET /interview/question/favorites
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "favorites": [
+      {
+        "favorite_id": 789,
+        "question_id": 123,
+        "question_content": "请描述一下React的生命周期方法",
+        "question_type": "技术",
+        "difficulty": "intermediate",
+        "created_at": "2025-01-23T10:30:00Z"
+      }
+    ],
+    "total": 1
+  }
+}
+
+### 面试历史记录接口
+
+#### 4.18 获取面试历史列表
+接口地址: GET /interview/history
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interviews": [
+      {
+        "interview_id": 456,
+        "session_id": "session_456_1",
+        "position": "前端工程师",
+        "company": "腾讯",
+        "date": "2025-01-23T10:30:00Z",
+        "duration": 1800,
+        "status": "completed",
+        "overall_score": 82,
+        "question_count": 8
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "per_page": 10
+  }
+}
+
+#### 4.19 获取面试详细报告
+接口地址: GET /interview/report/{sessionId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interview_id": 456,
+    "session_id": "session_456_1",
+    "overall_score": 82,
+    "detailed_scores": {
+      "technical_skills": 85,
+      "communication": 78,
+      "problem_solving": 80,
+      "cultural_fit": 84
+    },
+    "question_analysis": [
+      {
+        "question_id": 1,
+        "question": "请介绍一下你的前端开发经验",
+        "user_answer": "我有3年前端开发经验...",
+        "score": 85,
+        "feedback": "回答完整，经验丰富"
+      }
+    ],
+    "strengths": ["技术基础扎实", "表达清晰"],
+    "improvements": ["可以增加项目经验描述"],
+    "recommendations": [
+      "继续深入学习React高级特性",
+      "增加后端技术栈了解"
+    ]
+  }
+}
+
+#### 4.20 删除面试记录
+接口地址: DELETE /interview/record/{sessionId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试记录删除成功"
+}
+
+### 实时语音转写接口
+
+#### 4.21 启动实时语音转写
+接口地址: POST /interview/transcription/start
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "language": "zh-CN",
+  "sample_rate": 16000
+}
+响应示例:
+{
+  "success": true,
+  "message": "语音转写启动成功",
+  "data": {
+    "transcription_id": "trans_123",
+    "websocket_url": "wss://api.example.com/transcription/trans_123",
+    "status": "active"
+  }
+}
+
+#### 4.22 停止实时语音转写
+接口地址: POST /interview/transcription/stop
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "transcription_id": "trans_123"
+}
+响应示例:
+{
+  "success": true,
+  "message": "语音转写停止成功",
+  "data": {
+    "transcription_id": "trans_123",
+    "status": "stopped",
+    "total_duration": 1800,
+    "word_count": 2500
+  }
+}
+
+#### 4.23 发送音频数据进行转写
+接口地址: POST /interview/transcription/audio
+请求头:
+{
+  "Content-Type": "application/octet-stream",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+Binary audio data
+响应示例:
+{
+  "success": true,
+  "data": {
+    "transcription_id": "trans_123",
+    "text": "我认为React的生命周期方法主要包括...",
+    "confidence": 0.92,
+    "timestamp": "2025-01-23T10:30:15Z"
+  }
+}
+
+#### 4.24 获取转写结果
+接口地址: GET /interview/transcription/result/{sessionId}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "session_id": "session_456_1",
+    "transcription_segments": [
+      {
+        "start_time": "00:00:10",
+        "end_time": "00:00:25",
+        "text": "我认为React的生命周期方法主要包括...",
+        "confidence": 0.92
+      }
+    ],
+    "full_text": "我认为React的生命周期方法主要包括...",
+    "total_duration": 1800,
+    "word_count": 2500
+  }
+}
+
+#### 4.25 获取AI智能回复
+接口地址: POST /interview/ai/response
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "user_input": "我对React的生命周期方法有些疑问",
+  "context": "technical_interview"
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "ai_response": "很好的问题！React的生命周期方法确实是面试中的重点...",
+    "response_type": "explanation",
+    "confidence": 0.88,
+    "follow_up_questions": [
+      "你能具体说说哪个生命周期方法让你困惑吗？",
+      "你在项目中是如何使用这些方法的？"
+    ]
+  }
+}
+
+===============================================================================
+## 5. 偏好设置模块 (preference.js) - 11个接口
+===============================================================================
+
+### 面试偏好设置
+
+#### 5.1 获取面试偏好设置
+接口地址: GET /api/preferences/interview
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "avatar_preference": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN",
+    "interaction_frequency": "frequent",
+    "feedback_detail_level": "detailed",
+    "auto_save_progress": true,
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    }
+  }
+}
+
+#### 5.2 更新面试偏好设置
+接口地址: PUT /api/preferences/interview
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "avatar_preference": "110332017",
+  "voice_type": "female",
+  "language": "zh-CN",
+  "interaction_frequency": "frequent",
+  "feedback_detail_level": "detailed",
+  "auto_save_progress": true,
+  "notification_settings": {
+    "email_reminders": true,
+    "push_notifications": false
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试偏好设置更新成功",
+  "data": {
+    "avatar_preference": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN",
+    "interaction_frequency": "frequent",
+    "feedback_detail_level": "detailed",
+    "auto_save_progress": true,
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    }
+  }
+}
+
+#### 5.3 测试语音播放
+接口地址: POST /api/preferences/interview/test-voice
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "voice_type": "female",
+  "language": "zh-CN",
+  "test_text": "你好，这是语音测试"
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "audio_url": "https://example.com/test-audio/voice_test_123.mp3",
+    "duration": 3.5,
+    "voice_type": "female",
+    "language": "zh-CN"
+  }
+}
+
+### 求职偏好设置
+
+#### 5.4 获取求职偏好设置
+接口地址: GET /api/preferences/job
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+    "salary_expectations": {
+      "min": 15000,
+      "max": 25000,
+      "currency": "CNY"
+    },
+    "work_preferences": {
+      "work_type": "full_time",
+      "remote_work": true,
+      "overtime_acceptable": false
+    },
+    "location_preferences": ["北京", "上海", "深圳"],
+    "industry_preferences": ["互联网", "金融科技", "人工智能"]
+  }
+}
+
+#### 5.5 更新求职偏好设置
+接口地址: PUT /api/preferences/job
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "target_positions": ["前端工程师", "全栈工程师"],
+  "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+  "salary_expectations": {
+    "min": 15000,
+    "max": 25000,
+    "currency": "CNY"
+  },
+  "work_preferences": {
+    "work_type": "full_time",
+    "remote_work": true,
+    "overtime_acceptable": false
+  },
+  "location_preferences": ["北京", "上海", "深圳"],
+  "industry_preferences": ["互联网", "金融科技", "人工智能"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "求职偏好设置更新成功",
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+    "salary_expectations": {
+      "min": 15000,
+      "max": 25000,
+      "currency": "CNY"
+    },
+    "work_preferences": {
+      "work_type": "full_time",
+      "remote_work": true,
+      "overtime_acceptable": false
+    },
+    "location_preferences": ["北京", "上海", "深圳"],
+    "industry_preferences": ["互联网", "金融科技", "人工智能"]
+  }
+}
+
+### 隐私设置
+
+#### 5.6 获取隐私设置
+接口地址: GET /api/preferences/privacy
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "profile_visibility": "public",
+    "resume_visibility": "private",
+    "interview_history_visibility": "friends",
+    "allow_search_by_recruiters": true,
+    "show_online_status": false,
+    "data_sharing": {
+      "analytics": true,
+      "marketing": false,
+      "third_party": false
+    }
+  }
+}
+
+#### 5.7 更新隐私设置
+接口地址: PUT /api/preferences/privacy
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "profile_visibility": "public",
+  "resume_visibility": "private",
+  "interview_history_visibility": "friends",
+  "allow_search_by_recruiters": true,
+  "show_online_status": false,
+  "data_sharing": {
+    "analytics": true,
+    "marketing": false,
+    "third_party": false
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "隐私设置更新成功",
+  "data": {
+    "profile_visibility": "public",
+    "resume_visibility": "private",
+    "interview_history_visibility": "friends",
+    "allow_search_by_recruiters": true,
+    "show_online_status": false,
+    "data_sharing": {
+      "analytics": true,
+      "marketing": false,
+      "third_party": false
+    }
+  }
+}
+
+### 数据管理
+
+#### 5.8 清除用户数据
+接口地址: POST /api/preferences/clear-data
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "data_types": [
+    "login_history",
+    "search_history",
+    "view_history",
+    "interview_cache",
+    "temporary_files"
+  ],
+  "confirm_deletion": true
+}
+响应示例:
+{
+  "success": true,
+  "message": "用户数据清除成功",
+  "data": {
+    "cleared_items": 156,
+    "freed_space": "2.5MB",
+    "data_types_cleared": [
+      "login_history",
+      "search_history",
+      "view_history",
+      "interview_cache",
+      "temporary_files"
+    ]
+  }
+}
+
+#### 5.9 注销账户
+接口地址: POST /api/preferences/account/delete
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "password": "string",
+  "confirmation": "DELETE_MY_ACCOUNT",
+  "reason": "不再需要此服务",
+  "feedback": "系统功能很好，但我暂时不需要了"
+}
+响应示例:
+{
+  "success": true,
+  "message": "账户注销成功",
+  "data": {
+    "deletion_scheduled": "2025-01-30T10:30:00Z",
+    "grace_period_days": 7,
+    "recovery_token": "recovery_abc123"
+  }
+}
+
+### 通用偏好管理
+
+#### 5.10 获取所有偏好设置
+接口地址: GET /api/preferences/all
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interview_preferences": {
+      "avatar_preference": "110332017",
+      "voice_type": "female",
+      "language": "zh-CN",
+      "interaction_frequency": "frequent"
+    },
+    "job_preferences": {
+      "target_positions": ["前端工程师", "全栈工程师"],
+      "salary_expectations": {
+        "min": 15000,
+        "max": 25000
+      }
+    },
+    "privacy_settings": {
+      "profile_visibility": "public",
+      "resume_visibility": "private"
+    },
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    },
+    "system_preferences": {
+      "theme": "light",
+      "language": "zh-CN",
+      "timezone": "Asia/Shanghai"
+    }
+  }
+}
+
+#### 5.11 重置偏好设置
+接口地址: POST /api/preferences/reset
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "reset_types": [
+    "interview_preferences",
+    "job_preferences",
+    "notification_settings"
+  ],
+  "confirm_reset": true
+}
+响应示例:
+{
+  "success": true,
+  "message": "偏好设置重置成功",
+  "data": {
+    "reset_types": [
+      "interview_preferences",
+      "job_preferences",
+      "notification_settings"
+    ],
+    "reset_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+===============================================================================
+## 6. 后端控制器接口 - 48个接口
+===============================================================================
+
+### 认证控制器 (auth_controller.py) - 9个
+
+#### 6.1 用户注册
+接口地址: POST /api/auth/register
+请求头:
+{
+  "Content-Type": "application/json"
+}
+请求参数:
+{
+  "username": "string",
+  "email": "string",
+  "password": "string",
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "注册成功",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+#### 6.2 用户登录
+接口地址: POST /api/auth/login
+请求头:
+{
+  "Content-Type": "application/json"
+}
+请求参数:
+{
+  "username": "string",
+  "password": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "登录成功",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+#### 6.3 用户登出
+接口地址: POST /api/auth/logout
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "登出成功"
+}
+
+#### 6.4 修改密码
+接口地址: POST /api/auth/change-password
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "old_password": "string",
+  "new_password": "string",
+  "confirm_password": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "密码修改成功"
+}
+
+#### 6.5 验证令牌有效性
+接口地址: POST /api/auth/verify-token
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "Token有效",
+  "user": {
+    "user_id": 1,
+    "username": "testuser",
+    "email": "test@example.com",
+    "role": "用户"
+  }
+}
+
+#### 6.6 刷新令牌
+接口地址: POST /api/auth/refresh-token
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "refresh_token": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "Token刷新成功",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+#### 6.7 获取登录历史
+接口地址: GET /api/auth/login-history
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "login_time": "2025-01-23T10:30:00Z",
+      "ip_address": "192.168.1.100",
+      "device": "Chrome 120.0.0.0",
+      "location": "北京市"
+    }
+  ]
+}
+
+#### 6.8 刷新登录历史记录
+接口地址: POST /api/auth/refresh-login-history
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{}
+响应示例:
+{
+  "success": true,
+  "message": "登录历史已刷新",
+  "data": [
+    {
+      "id": 1,
+      "login_time": "2025-01-23T10:30:00Z",
+      "ip_address": "192.168.1.100",
+      "device": "Chrome 120.0.0.0",
+      "location": "北京市"
+    }
+  ]
+}
+
+#### 6.9 更换手机号
+接口地址: POST /api/auth/change-phone
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "new_phone": "string",
+  "verification_code": "string"
+}
+响应示例:
+{
+  "success": true,
+  "message": "手机号更换成功",
+  "phone": "138****8888"
+}
+
+### 用户资料控制器 (profile_controller.py) - 8个
+
+#### 6.10 获取个人基础信息
+接口地址: GET /api/profile/personal-info
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "name": "张三",
+    "gender": "male",
+    "birth_date": "1995-06-15",
+    "phone": "138****8888",
+    "email": "zhangsan@example.com",
+    "location": "北京市朝阳区",
+    "bio": "资深软件工程师，专注于前端开发"
+  }
+}
+
+#### 6.11 更新个人基础信息
+接口地址: PUT /api/profile/personal-info
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "name": "张三",
+  "gender": "male",
+  "birth_date": "1995-06-15",
+  "phone": "138****8888",
+  "location": "北京市朝阳区",
+  "bio": "资深软件工程师，专注于前端开发"
+}
+响应示例:
+{
+  "success": true,
+  "message": "个人信息更新成功",
+  "data": {
+    "name": "张三",
+    "gender": "male",
+    "birth_date": "1995-06-15",
+    "phone": "138****8888",
+    "location": "北京市朝阳区",
+    "bio": "资深软件工程师，专注于前端开发"
+  }
+}
+
+#### 6.12 获取教育背景信息
+接口地址: GET /api/profile/education
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+
+#### 6.13 更新教育背景信息
+接口地址: PUT /api/profile/education
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "education": [
+    {
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+响应示例:
+{
+  "success": true,
+  "message": "教育背景更新成功",
+  "data": [
+    {
+      "id": 1,
+      "school": "清华大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_date": "2013-09",
+      "end_date": "2017-07",
+      "gpa": "3.8",
+      "description": "主修计算机科学，辅修数学"
+    }
+  ]
+}
+
+#### 6.14 获取技能列表
+接口地址: GET /api/profile/skills
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "level": "expert",
+        "years": 5
+      },
+      {
+        "name": "Python",
+        "level": "advanced",
+        "years": 3
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "level": "expert"
+      },
+      {
+        "name": "项目管理",
+        "level": "intermediate"
+      }
+    ]
+  }
+}
+
+#### 6.15 更新技能列表
+接口地址: PUT /api/profile/skills
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "technical_skills": [
+    {
+      "name": "JavaScript",
+      "level": "expert",
+      "years": 5
+    }
+  ],
+  "soft_skills": [
+    {
+      "name": "团队协作",
+      "level": "expert"
+    }
+  ]
+}
+响应示例:
+{
+  "success": true,
+  "message": "技能列表更新成功",
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "level": "expert",
+        "years": 5
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "level": "expert"
+      }
+    ]
+  }
+}
+
+#### 6.16 上传头像
+接口地址: POST /api/profile/avatar
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+avatar: File (图片文件)
+响应示例:
+{
+  "success": true,
+  "message": "头像上传成功",
+  "data": {
+    "avatar_url": "https://example.com/avatars/user_1_avatar.jpg"
+  }
+}
+
+#### 6.17 获取用户资料概要
+接口地址: GET /api/profile/summary
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "profile_completion": 85,
+    "resume_count": 3,
+    "interview_count": 12,
+    "skills_count": 15,
+    "last_updated": "2025-01-23T10:30:00Z"
+  }
+}
+
+### 简历控制器 (resume_controller.py) - 10个
+
+#### 6.18 测试上传接口
+接口地址: POST /api/resume/test
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+file: File (测试文件)
+响应示例:
+{
+  "success": true,
+  "message": "测试上传成功",
+  "data": {
+    "file_name": "test.pdf",
+    "file_size": 1024000,
+    "upload_time": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 6.19 上传简历文件
+接口地址: POST /api/resume/upload
+请求头:
+{
+  "Content-Type": "multipart/form-data",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+resume: File (PDF/DOC/DOCX文件)
+title: string (可选，简历标题)
+响应示例:
+{
+  "success": true,
+  "message": "简历上传成功",
+  "data": {
+    "resume_id": 123,
+    "title": "张三_前端工程师简历",
+    "file_name": "resume.pdf",
+    "file_size": 1024000,
+    "upload_time": "2025-01-23T10:30:00Z",
+    "status": "processing"
+  }
+}
+
+#### 6.20 处理简历
+接口地址: POST /api/resume/process/{resume_id}
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "process_type": "full_analysis"
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历处理已开始",
+  "data": {
+    "resume_id": 123,
+    "process_id": "proc_456",
+    "status": "processing",
+    "estimated_time": 30
+  }
+}
+
+#### 6.21 获取用户简历列表
+接口地址: GET /api/resume/list
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resumes": [
+      {
+        "resume_id": 123,
+        "title": "张三_前端工程师简历",
+        "file_name": "resume.pdf",
+        "upload_time": "2025-01-23T10:30:00Z",
+        "status": "completed",
+        "analysis_score": 85
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "per_page": 10
+  }
+}
+
+#### 6.22 获取简历详情
+接口地址: GET /api/resume/{resume_id}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resume_id": 123,
+    "title": "张三_前端工程师简历",
+    "personal_info": {
+      "name": "张三",
+      "email": "zhangsan@example.com",
+      "phone": "138****8888"
+    },
+    "education": [
+      {
+        "school": "清华大学",
+        "degree": "本科",
+        "major": "计算机科学与技术"
+      }
+    ],
+    "work_experience": [
+      {
+        "company": "腾讯",
+        "position": "前端工程师",
+        "duration": "2020-2023"
+      }
+    ],
+    "skills": ["JavaScript", "React", "Vue.js"],
+    "analysis_result": {
+      "score": 85,
+      "strengths": ["技术栈完整", "项目经验丰富"],
+      "improvements": ["可以增加更多量化成果"]
+    }
+  }
+}
+
+#### 6.23 更新简历信息
+接口地址: PUT /api/resume/{resume_id}
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "title": "张三_高级前端工程师简历",
+  "personal_info": {
+    "name": "张三",
+    "email": "zhangsan@example.com",
+    "phone": "138****8888"
+  },
+  "skills": ["JavaScript", "React", "Vue.js", "Node.js"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历更新成功",
+  "data": {
+    "resume_id": 123,
+    "title": "张三_高级前端工程师简历",
+    "updated_at": "2025-01-23T10:30:00Z"
+  }
+}
+
+#### 6.24 删除简历
+接口地址: DELETE /api/resume/{resume_id}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历删除成功"
+}
+
+#### 6.25 重新分析简历
+接口地址: POST /api/resume/{resume_id}/analyze
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "analysis_type": "comprehensive",
+  "target_position": "前端工程师"
+}
+响应示例:
+{
+  "success": true,
+  "message": "简历分析完成",
+  "data": {
+    "analysis_id": "ana_789",
+    "score": 85,
+    "strengths": [
+      "技术栈与岗位匹配度高",
+      "项目经验丰富",
+      "教育背景优秀"
+    ],
+    "weaknesses": [
+      "缺少量化的工作成果",
+      "软技能描述不够具体"
+    ],
+    "suggestions": [
+      "增加具体的项目数据和成果",
+      "补充团队协作和领导经验"
+    ],
+    "keyword_match": 78,
+    "format_score": 92
+  }
+}
+
+#### 6.26 获取简历技能标签
+接口地址: GET /api/resume/{resume_id}/skills
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "technical_skills": [
+      {
+        "name": "JavaScript",
+        "confidence": 0.95,
+        "category": "编程语言"
+      },
+      {
+        "name": "React",
+        "confidence": 0.88,
+        "category": "前端框架"
+      }
+    ],
+    "soft_skills": [
+      {
+        "name": "团队协作",
+        "confidence": 0.75
+      }
+    ],
+    "total_skills": 15
+  }
+}
+
+#### 6.27 获取简历处理状态
+接口地址: GET /api/resume/status/{resume_id}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "resume_id": 123,
+    "status": "completed",
+    "progress": 100,
+    "current_step": "analysis_complete",
+    "estimated_remaining_time": 0,
+    "error_message": null
+  }
+}
+
+### 面试控制器 (interview_controller.py) - 7个
+
+#### 6.28 测试虚拟人WebSocket连接
+接口地址: POST /api/interview/test-avatar
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "avatar_id": "110332017",
+  "test_message": "测试连接"
+}
+响应示例:
+{
+  "success": true,
+  "message": "虚拟人连接测试成功",
+  "data": {
+    "connection_status": "connected",
+    "response_time": 150,
+    "avatar_id": "110332017"
+  }
+}
+
+#### 6.29 测试虚拟人HTTP API连接
+接口地址: POST /api/interview/test-avatar-http
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "avatar_id": "110332017",
+  "api_endpoint": "https://api.xfyun.cn/v1/avatar"
+}
+响应示例:
+{
+  "success": true,
+  "message": "HTTP API连接测试成功",
+  "data": {
+    "api_status": "active",
+    "response_time": 200,
+    "endpoint": "https://api.xfyun.cn/v1/avatar"
+  }
+}
+
+#### 6.30 获取面试配置选项
+接口地址: GET /api/interview/config
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "available_modes": ["technical", "behavioral", "comprehensive"],
+    "difficulty_levels": ["beginner", "intermediate", "advanced"],
+    "available_positions": [
+      "frontend_engineer",
+      "backend_engineer",
+      "fullstack_engineer",
+      "data_scientist"
+    ],
+    "available_avatars": [
+      {
+        "id": "110332017",
+        "name": "专业面试官",
+        "gender": "female"
+      }
+    ],
+    "voice_options": ["male", "female"],
+    "languages": ["zh-CN", "en-US"]
+  }
+}
+
+#### 6.31 开始面试
+接口地址: POST /api/interview/start
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "resume_id": 123,
+  "interview_config": {
+    "interview_mode": "technical",
+    "difficulty_level": "intermediate",
+    "position": "frontend_engineer",
+    "company": "腾讯",
+    "interaction_mode": "frequent"
+  },
+  "preferences": {
+    "avatar_id": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN"
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试开始成功",
+  "data": {
+    "interview_id": 456,
+    "session_id": "session_456_1",
+    "first_question_video_url": "xrtcs://xrtc-cn-east-2.xf-yun.com/ase0001...",
+    "stream_type": "xrtc",
+    "first_question_data": {
+      "type": "开场",
+      "content": "你好！根据你的简历，你有丰富的前端开发经验...",
+      "reference_answer": "我在前端开发方面有3年经验..."
+    }
+  }
+}
+
+#### 6.32 获取下一题
+接口地址: POST /api/interview/next-question
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "current_question_id": 1,
+  "user_answer": "我在前端开发方面有3年经验，主要使用React和Vue.js..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "question_id": 2,
+    "question_type": "技术",
+    "question_content": "请描述一下React的生命周期方法",
+    "video_url": "xrtcs://xrtc-cn-east-2.xf-yun.com/ase0002...",
+    "stream_type": "xrtc",
+    "reference_answer": "React的生命周期方法包括...",
+    "time_limit": 300,
+    "difficulty": "intermediate"
+  }
+}
+
+#### 6.33 提交答案并获取AI反馈
+接口地址: POST /api/interview/submit-answer
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "question_id": 2,
+  "answer": "React的生命周期方法主要分为三个阶段...",
+  "answer_time": 180,
+  "confidence_level": 8
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "answer_id": 789,
+    "ai_feedback": {
+      "score": 85,
+      "strengths": ["回答完整", "技术点准确"],
+      "improvements": ["可以增加实际应用场景"],
+      "detailed_analysis": "你对React生命周期的理解很好..."
+    },
+    "next_question_preview": {
+      "type": "技术",
+      "topic": "状态管理"
+    }
+  }
+}
+
+#### 6.34 结束面试
+接口地址: POST /api/interview/end
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "session_id": "session_456_1",
+  "end_reason": "completed"
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试结束",
+  "data": {
+    "interview_id": 456,
+    "total_questions": 8,
+    "total_time": 1800,
+    "overall_score": 82,
+    "report_url": "/api/interview/456/report",
+    "summary": {
+      "strengths": ["技术基础扎实", "表达清晰"],
+      "improvements": ["可以增加项目经验描述"]
+    }
+  }
+}
+
+### 偏好设置控制器 (preference_controller.py) - 9个
+
+#### 6.35 获取职业配置信息
+接口地址: GET /api/preferences/career-config
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "available_positions": [
+      "前端工程师",
+      "后端工程师",
+      "全栈工程师",
+      "数据科学家",
+      "产品经理"
+    ],
+    "industries": [
+      "互联网",
+      "金融科技",
+      "人工智能",
+      "电商",
+      "游戏"
+    ],
+    "company_sizes": [
+      "创业公司",
+      "中型企业",
+      "大型企业",
+      "外企"
+    ]
+  }
+}
+
+#### 6.36 获取职业偏好设置
+接口地址: GET /api/preferences/career
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_industries": ["互联网", "金融科技"],
+    "company_preferences": {
+      "size": "大型企业",
+      "culture": "创新型",
+      "benefits": ["弹性工作", "股权激励"]
+    },
+    "career_goals": {
+      "short_term": "提升技术能力",
+      "long_term": "成为技术专家"
+    }
+  }
+}
+
+#### 6.37 更新职业偏好设置
+接口地址: PUT /api/preferences/career
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "target_positions": ["前端工程师", "全栈工程师"],
+  "preferred_industries": ["互联网", "金融科技"],
+  "company_preferences": {
+    "size": "大型企业",
+    "culture": "创新型",
+    "benefits": ["弹性工作", "股权激励"]
+  },
+  "career_goals": {
+    "short_term": "提升技术能力",
+    "long_term": "成为技术专家"
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "职业偏好设置更新成功",
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_industries": ["互联网", "金融科技"],
+    "company_preferences": {
+      "size": "大型企业",
+      "culture": "创新型",
+      "benefits": ["弹性工作", "股权激励"]
+    },
+    "career_goals": {
+      "short_term": "提升技术能力",
+      "long_term": "成为技术专家"
+    }
+  }
+}
+
+#### 6.38 获取面试偏好设置
+接口地址: GET /api/preferences/interview
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "avatar_preference": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN",
+    "interaction_frequency": "frequent",
+    "feedback_detail_level": "detailed",
+    "auto_save_progress": true,
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    }
+  }
+}
+
+#### 6.39 更新面试偏好设置
+接口地址: PUT /api/preferences/interview
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "avatar_preference": "110332017",
+  "voice_type": "female",
+  "language": "zh-CN",
+  "interaction_frequency": "frequent",
+  "feedback_detail_level": "detailed",
+  "auto_save_progress": true,
+  "notification_settings": {
+    "email_reminders": true,
+    "push_notifications": false
+  }
+}
+响应示例:
+{
+  "success": true,
+  "message": "面试偏好设置更新成功",
+  "data": {
+    "avatar_preference": "110332017",
+    "voice_type": "female",
+    "language": "zh-CN",
+    "interaction_frequency": "frequent",
+    "feedback_detail_level": "detailed",
+    "auto_save_progress": true,
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    }
+  }
+}
+
+#### 6.40 测试语音播放
+接口地址: POST /api/preferences/interview/test-voice
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "voice_type": "female",
+  "language": "zh-CN",
+  "test_text": "你好，这是语音测试"
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "audio_url": "https://example.com/test-audio/voice_test_123.mp3",
+    "duration": 3.5,
+    "voice_type": "female",
+    "language": "zh-CN"
+  }
+}
+
+#### 6.41 获取求职偏好设置
+接口地址: GET /api/preferences/job
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+    "salary_expectations": {
+      "min": 15000,
+      "max": 25000,
+      "currency": "CNY"
+    },
+    "work_preferences": {
+      "work_type": "full_time",
+      "remote_work": true,
+      "overtime_acceptable": false
+    },
+    "location_preferences": ["北京", "上海", "深圳"],
+    "industry_preferences": ["互联网", "金融科技", "人工智能"]
+  }
+}
+
+#### 6.42 更新求职偏好设置
+接口地址: PUT /api/preferences/job
+请求头:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+请求参数:
+{
+  "target_positions": ["前端工程师", "全栈工程师"],
+  "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+  "salary_expectations": {
+    "min": 15000,
+    "max": 25000,
+    "currency": "CNY"
+  },
+  "work_preferences": {
+    "work_type": "full_time",
+    "remote_work": true,
+    "overtime_acceptable": false
+  },
+  "location_preferences": ["北京", "上海", "深圳"],
+  "industry_preferences": ["互联网", "金融科技", "人工智能"]
+}
+响应示例:
+{
+  "success": true,
+  "message": "求职偏好设置更新成功",
+  "data": {
+    "target_positions": ["前端工程师", "全栈工程师"],
+    "preferred_companies": ["腾讯", "阿里巴巴", "字节跳动"],
+    "salary_expectations": {
+      "min": 15000,
+      "max": 25000,
+      "currency": "CNY"
+    },
+    "work_preferences": {
+      "work_type": "full_time",
+      "remote_work": true,
+      "overtime_acceptable": false
+    },
+    "location_preferences": ["北京", "上海", "深圳"],
+    "industry_preferences": ["互联网", "金融科技", "人工智能"]
+  }
+}
+
+#### 6.43 获取所有偏好设置
+接口地址: GET /api/preferences/all
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interview_preferences": {
+      "avatar_preference": "110332017",
+      "voice_type": "female",
+      "language": "zh-CN",
+      "interaction_frequency": "frequent"
+    },
+    "job_preferences": {
+      "target_positions": ["前端工程师", "全栈工程师"],
+      "salary_expectations": {
+        "min": 15000,
+        "max": 25000
+      }
+    },
+    "privacy_settings": {
+      "profile_visibility": "public",
+      "resume_visibility": "private"
+    },
+    "notification_settings": {
+      "email_reminders": true,
+      "push_notifications": false
+    },
+    "system_preferences": {
+      "theme": "light",
+      "language": "zh-CN",
+      "timezone": "Asia/Shanghai"
+    }
+  }
+}
+
+### 结果控制器 (result_controller.py) - 5个
+
+#### 6.44 获取面试结果详情
+接口地址: GET /api/result/{interview_id}
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interview_id": 456,
+    "session_id": "session_456_1",
+    "overall_score": 82,
+    "detailed_scores": {
+      "technical_skills": 85,
+      "communication": 78,
+      "problem_solving": 80,
+      "cultural_fit": 84
+    },
+    "question_analysis": [
+      {
+        "question_id": 1,
+        "question": "请介绍一下你的前端开发经验",
+        "user_answer": "我有3年前端开发经验...",
+        "score": 85,
+        "feedback": "回答完整，经验丰富"
+      }
+    ],
+    "strengths": ["技术基础扎实", "表达清晰"],
+    "improvements": ["可以增加项目经验描述"],
+    "recommendations": [
+      "继续深入学习React高级特性",
+      "增加后端技术栈了解"
+    ]
+  }
+}
+
+#### 6.45 获取面试结果列表
+接口地址: GET /api/result/list
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "interview_id": 456,
+        "position": "前端工程师",
+        "company": "腾讯",
+        "date": "2025-01-23T10:30:00Z",
+        "duration": 1800,
+        "overall_score": 82,
+        "status": "completed"
+      }
+    ],
+    "total": 1,
+    "page": 1,
+    "per_page": 10
+  }
+}
+
+#### 6.46 获取面试统计信息
+接口地址: GET /api/result/statistics
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "total_interviews": 12,
+    "average_score": 78.5,
+    "score_trend": [
+      {"month": "2025-01", "average": 78.5}
+    ],
+    "skill_performance": {
+      "technical_skills": 82,
+      "communication": 75,
+      "problem_solving": 80
+    },
+    "improvement_areas": [
+      "沟通表达",
+      "项目经验描述"
+    ]
+  }
+}
+
+#### 6.47 获取详细分析报告
+接口地址: GET /api/result/{interview_id}/analysis
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "interview_id": 456,
+    "analysis_report": {
+      "executive_summary": "候选人技术基础扎实，具备良好的前端开发能力...",
+      "detailed_analysis": {
+        "technical_competency": {
+          "score": 85,
+          "strengths": ["JavaScript基础扎实", "框架使用熟练"],
+          "weaknesses": ["缺少后端经验"]
+        },
+        "soft_skills": {
+          "score": 78,
+          "strengths": ["表达清晰", "逻辑性强"],
+          "weaknesses": ["需要提升团队协作描述"]
+        }
+      },
+      "hiring_recommendation": "推荐录用",
+      "confidence_level": 0.85
+    }
+  }
+}
+
+#### 6.48 导出面试结果
+接口地址: GET /api/result/{interview_id}/export
+请求头:
+{
+  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+响应示例:
+{
+  "success": true,
+  "data": {
+    "export_url": "https://example.com/exports/interview_result_456.pdf",
+    "format": "pdf",
+    "file_size": 1536000,
+    "expires_at": "2025-01-24T10:30:00Z",
+    "download_token": "download_abc123"
+  }
+}
+
+
+本文档包含了 Interview AI  智能面试平台的完整API接口规范，共计87个接口：
+
+### 前端模块 (69个接口):
+- 认证模块: 21个接口 - 用户认证、安全设置、隐私管理
+- 用户资料模块: 10个接口 - 个人信息、教育背景、技能管理
+- 简历管理模块: 22个接口 - 上传分析、AI服务、评估报告
+- 面试模块: 25个接口 - 面试流程、录制控制、语音转写
+- 偏好设置模块: 11个接口 - 面试偏好、求职设置、数据管理
+
+### 后端控制器 (48个接口):
+- 认证控制器: 9个接口
+- 用户资料控制器: 8个接口
+- 简历控制器: 10个接口
+- 面试控制器: 7个接口
+- 偏好设置控制器: 9个接口
+- 结果控制器: 5个接口
+
+

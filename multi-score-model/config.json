@@ -1,0 +1,10 @@
+{
+    "model_name": "bert-base-chinese",
+    "max_len": 128,
+    "batch_size": 16,
+    "num_epochs": 3,
+    "learning_rate": 2e-5,
+    "data_file": "data/train_expanded.jsonl",
+    "output_dir": "./saved_model"
+}
+

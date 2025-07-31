@@ -1,0 +1,276 @@
+@import './variables.scss';
+
+// 重置样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: $font-size-base;
+  color: $text-primary;
+  background-color: $background-color;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  height: 100%;
+}
+
+// 链接样式
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color 0.3s;
+
+  &:hover {
+    color: lighten($primary-color, 10%);
+  }
+}
+
+// 按钮基础样式
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+// 输入框基础样式
+input,
+textarea {
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+// 列表样式
+ul,
+ol {
+  list-style: none;
+}
+
+// 图片样式
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: $background-color;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-color;
+  border-radius: 3px;
+
+  &:hover {
+    background: $text-secondary;
+  }
+}
+
+// 工具类
+.clearfix::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+// 间距工具类
+@each $prop in (margin, padding) {
+  @each $size, $length in (xs: $spacing-xs, sm: $spacing-sm, md: $spacing-md, lg: $spacing-lg, xl: $spacing-xl, xxl: $spacing-xxl) {
+    .#{str-slice($prop, 1, 1)}-#{$size} {
+      #{$prop}: $length;
+    }
+    .#{str-slice($prop, 1, 1)}t-#{$size} {
+      #{$prop}-top: $length;
+    }
+    .#{str-slice($prop, 1, 1)}r-#{$size} {
+      #{$prop}-right: $length;
+    }
+    .#{str-slice($prop, 1, 1)}b-#{$size} {
+      #{$prop}-bottom: $length;
+    }
+    .#{str-slice($prop, 1, 1)}l-#{$size} {
+      #{$prop}-left: $length;
+    }
+    .#{str-slice($prop, 1, 1)}x-#{$size} {
+      #{$prop}-left: $length;
+      #{$prop}-right: $length;
+    }
+    .#{str-slice($prop, 1, 1)}y-#{$size} {
+      #{$prop}-top: $length;
+      #{$prop}-bottom: $length;
+    }
+  }
+}
+
+// 显示/隐藏
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+// Flex 布局
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-around {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+// 文字省略
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.text-ellipsis-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+// 动画
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.3s ease-in-out;
+}
+
+.slide-in-down {
+  animation: slideInDown 0.3s ease-in-out;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+// Element Plus 样式覆盖
+.el-button {
+  border-radius: $border-radius;
+}
+
+.el-card {
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-light;
+}
+
+.el-input__wrapper {
+  border-radius: $border-radius;
+}
+
+.el-form-item__label {
+  color: $text-regular;
+  font-weight: 500;
+} 
